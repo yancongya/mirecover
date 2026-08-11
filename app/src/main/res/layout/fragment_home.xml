@@ -21,13 +21,27 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <!-- 使用说明入口 -->
+        <!-- 顶部：如何复制教程 + 使用说明 -->
+        <TextView
+            android:id="@+id/btn_help_copy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:background="?attr/selectableItemBackground"
+            android:text="@string/btn_help_copy"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            android:drawablePadding="8dp"
+            app:drawableStartCompat="@drawable/ic_help" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_howto"
             style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="@string/btn_howto" />
 
         <!-- 配置区（主面板卡片） -->
@@ -157,83 +171,32 @@
                     android:textSize="13sp"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
-                <!-- 更多设置展开入口 -->
-                <LinearLayout
-                    android:id="@+id/more_settings_btn"
+                <!-- 导出到相册（直接显示） -->
+                <TextView
+                    android:id="@+id/lbl_export"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:paddingVertical="8dp"
-                    android:foreground="?attr/selectableItemBackground">
+                    android:layout_marginTop="16dp"
+                    android:text="@string/lbl_export"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorOnSurface" />
 
-                    <ImageView
-                        android:id="@+id/iv_chevron"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_expand_more"
-                        app:tint="?attr/colorOnSurfaceVariant" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:text="@string/more_settings"
-                        android:textAppearance="?attr/textAppearanceLabelMedium"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
-                </LinearLayout>
-
-                <!-- 可展开的更多设置 -->
-                <LinearLayout
-                    android:id="@+id/settings_more"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_subdir"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_marginTop="8dp"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:hint="@string/subdir_hint">
 
-                    <TextView
-                        android:id="@+id/lbl_export"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_subdir"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/lbl_export"
-                        android:textAppearance="?attr/textAppearanceLabelLarge"
-                        android:textColor="?attr/colorOnSurface" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_subdir"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        android:hint="@string/subdir_hint">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_subdir"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Camera"
-                            android:inputType="text"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <TextView
-                        android:id="@+id/btn_help_copy"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:padding="8dp"
-                        android:text="@string/btn_help_copy"
-                        android:textSize="13sp"
-                        android:textColor="?attr/colorPrimary"
-                        android:drawablePadding="8dp"
-                        android:foreground="?attr/selectableItemBackground"
-                        app:drawableStartCompat="@drawable/ic_help" />
-                </LinearLayout>
+                        android:text="Camera"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

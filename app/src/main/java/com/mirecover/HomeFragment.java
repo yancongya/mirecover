@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,10 +27,6 @@ public class HomeFragment extends Fragment {
     private EditText etSubdir;
     private MaterialButton btnRepair;
     private TextView tvStatus;
-    private TextView btnHelp;
-    private View settingsMore;
-    private ImageView ivChevron;
-    private boolean moreExpanded = false;
 
     @Nullable
     @Override
@@ -45,15 +40,12 @@ public class HomeFragment extends Fragment {
         etSubdir = v.findViewById(R.id.et_subdir);
         btnRepair = v.findViewById(R.id.btn_repair);
         tvStatus = v.findViewById(R.id.tv_status);
-        btnHelp = v.findViewById(R.id.btn_help_copy);
-        settingsMore = v.findViewById(R.id.settings_more);
-        ivChevron = v.findViewById(R.id.iv_chevron);
-        View moreSettingsBtn = v.findViewById(R.id.more_settings_btn);
+        View btnHelp = v.findViewById(R.id.btn_help_copy);
         View btnOpenSource = v.findViewById(R.id.btn_open_source);
         View btnOpenRepair = v.findViewById(R.id.btn_open_repair);
+        View btnHowTo = v.findViewById(R.id.btn_howto);
 
         MainActivity activity = (MainActivity) requireActivity();
-        View btnHowTo = v.findViewById(R.id.btn_howto);
 
         etSource.setText(MainActivity.DEFAULT_SRC);
         etRepair.setText(MainActivity.DEFAULT_REPAIR);
@@ -63,7 +55,6 @@ public class HomeFragment extends Fragment {
         btnHowTo.setOnClickListener(x -> showHowTo());
         btnOpenSource.setOnClickListener(x -> activity.openDir(getSourcePath()));
         btnOpenRepair.setOnClickListener(x -> activity.openDir(getRepairPath()));
-        moreSettingsBtn.setOnClickListener(x -> toggleMoreSettings());
         return v;
     }
 
@@ -94,13 +85,6 @@ public class HomeFragment extends Fragment {
             Toast.makeText(requireContext(),
                     getString(R.string.howto_more_fail, url), Toast.LENGTH_LONG).show();
         }
-    }
-
-    /** 展开/收起「更多设置」面板并旋转箭头。 */
-    private void toggleMoreSettings() {
-        moreExpanded = !moreExpanded;
-        settingsMore.setVisibility(moreExpanded ? View.VISIBLE : View.GONE);
-        ivChevron.animate().rotation(moreExpanded ? 180f : 0f).setDuration(200).start();
     }
 
     // ---------- 供 MainActivity 读取的配置 ----------
