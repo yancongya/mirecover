@@ -28,6 +28,7 @@ public class AboutFragment extends Fragment {
 
     private static final String GITHUB_URL = "https://github.com/yancongya/mirecover";
     private static final String WEBSITE_URL = "https://yancongya.github.io/mirecover/";
+    private static final String ONLINE_REPAIR_URL = "https://yancongya.github.io/mirecover/repair.html";
 
     private TextView tvVersion;
     private MaterialButton btnCheckUpdate;
@@ -42,12 +43,14 @@ public class AboutFragment extends Fragment {
         tvVersion = v.findViewById(R.id.tv_about_version);
         btnCheckUpdate = v.findViewById(R.id.btn_check_update);
         MaterialButton btnWebsite = v.findViewById(R.id.btn_about_website);
+        MaterialButton btnOnline = v.findViewById(R.id.btn_about_online);
         MaterialButton btnGithub = v.findViewById(R.id.btn_about_github);
 
         tvVersion.setText(getString(R.string.about_version, getVersionName()));
 
         btnCheckUpdate.setOnClickListener(x -> checkUpdate());
         btnWebsite.setOnClickListener(x -> openUrl(WEBSITE_URL));
+        btnOnline.setOnClickListener(x -> openUrl(ONLINE_REPAIR_URL));
         btnGithub.setOnClickListener(x -> openUrl(GITHUB_URL));
         return v;
     }

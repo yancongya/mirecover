@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>在线找回 · MIUI 缓存图片恢复（免安装）</title>
+<meta name="description" content="不用安装 App，直接在浏览器里把 MIUI 相册缓存的 .0 文件改名下载回 .jpg，多选一键找回。">
+<meta name="theme-color" content="#FF6900">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Material 3 · MIUI 橙色系 · 浅色（与 index.html 保持一致） */
+  --primary:#FF6900;
+  --on-primary:#FFFFFF;
+  --primary-container:#FFDBC8;
+  --on-primary-container:#3B0B00;
+  --secondary-container:#FFDBC8;
+  --surface:#FFFBFF;
+  --surface-container-lowest:#FFFFFF;
+  --surface-container-low:#FFF5F0;
+  --surface-container:#F8E8E0;
+  --surface-container-high:#F2E2DA;
+  --surface-container-highest:#ECDDD5;
+  --on-surface:#211A16;
+  --on-surface-variant:#52443C;
+  --outline:#85746B;
+  --outline-variant:#D8C2B8;
+  --error:#BA1A1A;
+  --on-error:#FFFFFF;
+  --shadow:0 6px 24px rgba(33,26,22,.08), 0 2px 8px rgba(33,26,22,.05);
+  --shadow-lg:0 24px 64px -12px rgba(255,105,0,.28);
+  --sb-track:transparent;
+  --sb-thumb:rgba(255,105,0,.35);
+  --sb-thumb-hover:rgba(255,105,0,.7);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --primary:#FFB690;
+    --on-primary:#5B1A00;
+    --primary-container:#7C2C00;
+    --on-primary-container:#FFDBC8;
+    --secondary-container:#5B4135;
+    --surface:#1A1109;
+    --surface-container-lowest:#140C05;
+    --surface-container-low:#221913;
+    --surface-container:#271D17;
+    --surface-container-high:#312722;
+    --surface-container-highest:#3C312C;
+    --on-surface:#F1DFD7;
+    --on-surface-variant:#D8C2B8;
+    --outline:#A08C83;
+    --outline-variant:#52443C;
+    --error:#FFB4AB;
+    --on-error:#690005;
+    --shadow:0 6px 24px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.25);
+    --shadow-lg:0 24px 64px -12px rgba(255,182,144,.15);
+    --sb-thumb:rgba(255,182,144,.3);
+    --sb-thumb-hover:rgba(255,182,144,.65);
+  }
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--sb-thumb) var(--sb-track)}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:var(--sb-track)}
+::-webkit-scrollbar-thumb{background:var(--sb-thumb);border-radius:99px;border:1px solid transparent;background-clip:padding-box;transition:background .2s}
+::-webkit-scrollbar-thumb:hover{background:var(--sb-thumb-hover)}
+::-webkit-scrollbar-corner{background:transparent}
+body{
+  font-family:"Noto Sans SC",system-ui,-apple-system,sans-serif;
+  background:var(--surface);color:var(--on-surface);
+  line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.bg-grain{
+  position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4;
+  background-image:radial-gradient(var(--primary) 1px, transparent 1px);
+  background-size:48px 48px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 70%);
+          mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 70%);
+}
+.container{max-width:760px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+
+/* 顶部导航 */
+nav{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--outline-variant);
+}
+.nav-inner{max-width:760px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;min-width:0;flex:1 1 auto;text-decoration:none;color:var(--on-surface)}
+.brand img{width:32px;height:32px;border-radius:9px;flex:none;display:block}
+.brand .txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(13px,4.2vw,16px);min-width:0}
+.nav-links{display:flex;gap:8px;align-items:center;flex:none}
+
+/* 按钮 */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--primary);color:var(--on-primary);
+  border:none;border-radius:999px;padding:11px 20px;font-size:14px;font-weight:600;
+  cursor:pointer;text-decoration:none;transition:transform .15s, box-shadow .2s;
+  box-shadow:var(--shadow);white-space:nowrap;font-family:inherit;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.tonal{background:var(--secondary-container);color:var(--on-primary-container)}
+.btn.ghost{background:transparent;color:var(--primary);box-shadow:none;border:1px solid var(--primary)}
+.btn.block{width:100%}
+
+/* 头部 */
+header.hero{padding:40px 20px 24px;text-align:center}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--primary-container);color:var(--on-primary-container);
+  border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:600;margin-bottom:16px;
+}
+header h1{font-family:"Noto Serif SC",serif;font-size:clamp(26px,7vw,36px);font-weight:900;line-height:1.25;margin-bottom:10px}
+header h1 .accent{background:linear-gradient(120deg,var(--primary),#FF9A62);-webkit-background-clip:text;background-clip:text;color:transparent}
+header .sub{color:var(--on-surface-variant);font-size:15px;font-weight:300;max-width:600px;margin:0 auto}
+.privacy-note{
+  display:flex;align-items:center;gap:8px;justify-content:center;
+  margin-top:18px;font-size:12.5px;color:var(--on-surface-variant);
+  background:var(--surface-container-low);border:1px solid var(--outline-variant);
+  border-radius:999px;padding:8px 16px;width:fit-content;margin-left:auto;margin-right:auto;
+}
+
+/* 卡片 */
+.card{
+  background:var(--surface-container-low);border:1px solid var(--outline-variant);
+  border-radius:22px;padding:22px;margin-bottom:18px;
+}
+.card h2{font-size:17px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+
+/* 前置操作提示 */
+.prep-tip{
+  display:flex;gap:12px;background:var(--primary-container);
+  border:1px solid var(--primary);border-radius:16px;padding:16px;margin-bottom:18px;
+}
+.prep-tip .ic{flex:none;font-size:24px}
+.prep-tip ol{margin-left:18px;color:var(--on-primary-container);font-size:14px}
+.prep-tip li{margin-bottom:6px}
+.prep-tip li:last-child{margin-bottom:0}
+.prep-tip code{background:color-mix(in srgb, var(--on-primary-container) 12%, transparent);padding:1px 6px;border-radius:6px;font-size:12.5px}
+
+/* 能力检测 */
+.cap-box{margin-bottom:18px}
+.cap-row{
+  display:flex;align-items:center;gap:10px;font-size:14px;padding:10px 14px;
+  border:1px solid var(--outline-variant);border-radius:12px;margin-bottom:8px;
+  background:var(--surface-container-lowest);
+}
+.cap-row .st{flex:none;width:20px;text-align:center}
+.cap-row.ok .st{color:#2E7D32}
+.cap-row.fail .st{color:var(--error)}
+.cap-row .txt{flex:1}
+.cap-row .tag{flex:none;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--surface-container-high)}
+
+/* 选择区 */
+.drop-zone{
+  border:2px dashed var(--outline);border-radius:18px;padding:36px 20px;
+  text-align:center;cursor:pointer;transition:border-color .2s, background .2s;
+  background:var(--surface-container-lowest);
+}
+.drop-zone.drag{border-color:var(--primary);background:var(--primary-container)}
+.drop-zone .big{font-size:40px;margin-bottom:10px}
+.drop-zone p{color:var(--on-surface-variant);font-size:14px}
+.drop-zone .or{margin:8px 0;color:var(--outline);font-size:12px}
+input[type=file]{display:none}
+
+/* 文件列表 */
+.file-list{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.file-row{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  background:var(--surface-container-lowest);border:1px solid var(--outline-variant);
+  border-radius:14px;
+}
+.file-row .thumb{
+  flex:none;width:44px;height:44px;border-radius:10px;object-fit:cover;background:var(--surface-container-high);
+}
+.file-row .info{flex:1;min-width:0}
+.file-row .name{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-row .meta{font-size:12px;color:var(--on-surface-variant)}
+.file-row .badge{flex:none;font-size:11px;padding:2px 8px;border-radius:999px;font-weight:600}
+.file-row .badge.ok{background:color-mix(in srgb,#2E7D32 15%,transparent);color:#2E7D32}
+.file-row .badge.warn{background:color-mix(in srgb,#F9A825 18%,transparent);color:#B07900}
+.file-row .badge.err{background:color-mix(in srgb,var(--error) 15%,transparent);color:var(--error)}
+.file-row button.dl{
+  flex:none;border:none;background:var(--primary);color:var(--on-primary);
+  border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;
+}
+.file-row button.dl.done{background:var(--surface-container-high);color:var(--outline);cursor:default}
+
+/* 结果栏 */
+.result-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;flex-wrap:wrap}
+.result-bar .count{font-size:13px;color:var(--on-surface-variant)}
+
+/* 底部说明 */
+.steps-hint{margin-top:6px;font-size:13px;color:var(--on-surface-variant)}
+.steps-hint strong{color:var(--primary)}
+
+footer{padding:28px 0;border-top:1px solid var(--outline-variant);color:var(--on-surface-variant);font-size:12.5px;text-align:center}
+footer a{color:var(--primary);text-decoration:none}
+footer .back{margin-top:6px}
+
+/* 前置引导弹窗 */
+#overlay{
+  position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(3px);
+}
+#overlay.show{display:flex}
+.sheet{
+  width:100%;max-width:560px;background:var(--surface);border-radius:26px 26px 0 0;
+  padding:26px 22px 30px;animation:sheetUp .3s ease;max-height:88vh;overflow-y:auto;
+}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet h2{font-family:"Noto Serif SC",serif;font-size:21px;font-weight:900;margin-bottom:6px}
+.sheet .sub{color:var(--on-surface-variant);font-size:14px;margin-bottom:18px}
+.sheet ol{margin-left:18px;font-size:14.5px}
+.sheet li{margin-bottom:10px}
+.sheet li strong{color:var(--primary)}
+.sheet .note{
+  margin-top:14px;padding:12px 14px;background:var(--primary-container);
+  color:var(--on-primary-container);border-radius:12px;font-size:13px;
+}
+.sheet .actions{display:flex;gap:10px;margin-top:20px}
+
+@media (min-width:600px){
+  #overlay{align-items:center;padding:20px}
+  .sheet{border-radius:26px;padding:30px}
+}
+</style>
+</head>
+<body>
+<div class="bg-grain"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><img src="logo.svg" alt="MIUI 缓存图片恢复" width="34" height="34"><span class="txt">在线找回</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="btn ghost">← 返回主页</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero container">
+  <div class="eyebrow">🌐 免安装 · 纯网页 · 本地处理</div>
+  <h1>在线<span class="accent">找回</span>缓存图片</h1>
+  <p class="sub">不用下载 App，直接在浏览器里把缓存里的 <b>.0</b> 文件改名下载成 <b>.jpg</b>。
+  全程在你手机本地完成，不上传任何照片。</p>
+  <div class="privacy-note">🔒 图片只在你的手机里处理，绝不联网上传</div>
+</header>
+
+<div class="container">
+  <!-- 前置操作提示 -->
+  <div class="prep-tip">
+    <div class="ic">📁</div>
+    <div>
+      <strong style="font-size:14.5px">开始前，请先用手机会自带的「文件管理」复制缓存目录</strong>
+      <ol style="margin-top:8px">
+        <li>打开「文件管理」，进入 <code>Android/data/com.miui.gallery/files/gallery_disk_cache/</code></li>
+        <li>把整个 <code>full_size</code> 文件夹<b>复制</b>到 <code>Download</code>（即 <code>Download/full_size</code>）</li>
+        <li>因为 Android 11+ 系统限制，网页无法直接读取 <code>Android/data</code>，必须先把文件复制到普通位置</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 能力检测 -->
+  <div class="card">
+    <h2>🩺 环境检测</h2>
+    <div class="cap-box" id="capBox"></div>
+    <div id="capFailBox"></div>
+  </div>
+
+  <!-- 选择文件 -->
+  <div class="card">
+    <h2>🗂️ 1. 选择 .0 缓存文件</h2>
+    <div class="drop-zone" id="dropZone">
+      <div class="big">📥</div>
+      <p>点这里选择 .0 文件，或直接拖进来</p>
+      <p class="or">支持多选 · 一次可选很多个</p>
+    </div>
+    <input type="file" id="fileInput" accept=".0,image/*,.jpg,.jpeg,.png" multiple>
+    <div class="file-list" id="fileList"></div>
+  </div>
+
+  <!-- 改名下载 -->
+  <div class="card">
+    <h2>⬇️ 2. 改名下载</h2>
+    <p class="steps-hint">勾选后点下面按钮，会<b>按顺序</b>逐个下载为 <b>.jpg</b>（不改动图片内容，和 App 修复逻辑一致）。</p>
+    <div class="result-bar">
+      <span class="count" id="count">已选 0 个文件</span>
+      <button class="btn" id="btnAll" disabled>⬇ 全部改名下载</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div>© 2026 MIUI 缓存图片恢复 · 在线版</div>
+    <div class="back"><a href="index.html">← 返回主页 · 下载完整版 App</a></div>
+  </div>
+</footer>
+
+<!-- 前置引导弹窗 -->
+<div id="overlay">
+  <div class="sheet">
+    <h2>👋 开始前，先读一下</h2>
+    <p class="sub">为了让照片能顺利找回来，请按下面三步操作：</p>
+    <ol>
+      <li><strong>用手机「文件管理」</strong>，进入<br><code style="font-size:12px;word-break:break-all">Android/data/com.miui.gallery/files/gallery_disk_cache/</code></li>
+      <li>把整个 <code>full_size</code> 文件夹<b>复制</b>到 Download 目录</li>
+      <li>回到这个页面，点「选择文件」，从 Download 里挑选 .0 文件</li>
+    </ol>
+    <div class="note">⚠️ 网页和 App 一样，都读不了 Android/data 里的内容。所以必须先把缓存文件夹复制到 Download，浏览器才能选到它。</div>
+    <div class="actions">
+      <button class="btn" id="btnStart">✅ 我已复制好，开始</button>
+      <button class="btn ghost" id="btnLater">稍后再说</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var selected = [];          // {file, origName, base}
+  var capFail = false;
+
+  /* ===== 能力检测 ===== */
+  var caps = [
+    {key:'file',   name:'文件选择',            ok: !!(window.File && window.FileList), fail:'浏览器版本过低，请用手机自带浏览器或最新 Chrome'},
+    {key:'blob',   name:'文件读取',            ok: !!(window.Blob), fail:'无法处理文件数据'},
+    {key:'url',    name:'改名下载',            ok: !!(URL && URL.createObjectURL), fail:'浏览器不支持本地下载'},
+  ];
+  function renderCaps(){
+    var box = $('capBox');
+    box.innerHTML = '';
+    capFail = false;
+    caps.forEach(function(c){
+      var row = document.createElement('div');
+      row.className = 'cap-row ' + (c.ok ? 'ok' : 'fail');
+      row.innerHTML = '<span class="st">' + (c.ok ? '✓' : '✕') + '</span>' +
+                      '<span class="txt">' + c.name + '</span>' +
+                      '<span class="tag">' + (c.ok ? '可用' : '不可用') + '</span>';
+      box.appendChild(row);
+      if(!c.ok){ capFail = true; }
+    });
+    if(capFail){
+      var fb = $('capFailBox');
+      fb.innerHTML = '<div class="prep-tip"><div class="ic">⚠️</div><div>当前浏览器不支持在线找回所需功能。请改用手机自带浏览器，或直接<a href="index.html" style="color:var(--primary);font-weight:600">下载完整版 App</a>。</div></div>';
+      $('btnAll').disabled = true;
+      $('fileInput').disabled = true;
+      $('dropZone').style.pointerEvents = 'none';
+      $('dropZone').style.opacity = .5;
+    }
+  }
+
+  /* ===== 前置引导弹窗 ===== */
+  var overlay = $('overlay');
+  function showOverlay(){ if(!capFail) overlay.classList.add('show'); }
+  $('btnStart').addEventListener('click', function(){ overlay.classList.remove('show'); });
+  $('btnLater').addEventListener('click', function(){ overlay.classList.remove('show'); });
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) overlay.classList.remove('show'); });
+
+  /* ===== 选择文件 ===== */
+  var dropZone = $('dropZone'), fileInput = $('fileInput');
+  function pickFiles(e){
+    var files = e.target.files || e.dataTransfer.files;
+    if(!files || !files.length) return;
+    for(var i=0;i<files.length;i++) addFile(files[i]);
+    e.target.value = '';
+    render();
+  }
+  dropZone.addEventListener('click', function(){ if(!capFail) fileInput.click(); });
+  fileInput.addEventListener('change', pickFiles);
+  dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.classList.add('drag'); });
+  dropZone.addEventListener('dragleave', function(){ dropZone.classList.remove('drag'); });
+  dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.classList.remove('drag'); pickFiles(e); });
+
+  /* 添加文件：.0 → .jpg，其余原样保留扩展名 */
+  function addFile(f){
+    var name = f.name || '';
+    var base = name.replace(/\.[^/.]+$/, '');
+    var newName = (name.toLowerCase().endsWith('.0'))
+      ? base + '.jpg'
+      : name;
+    selected.push({file:f, origName:name, base:base, newName:newName});
+  }
+
+  /* 按扩展名取显示徽标（本地校验文件头，非阻塞） */
+  function classify(f, done){
+    if(f.name.toLowerCase().endsWith('.0')){
+      var reader = new FileReader();
+      reader.onload = function(){
+        var buf = new Uint8Array(reader.result, 0, 4);
+        if(buf[0]===0xFF && buf[1]===0xD8) return done('ok');   // JPEG
+        if(buf[0]===0x89 && buf[1]===0x50) return done('ok');   // PNG
+        return done('warn');                                    // 未知类型，仍可下载
+      };
+      reader.onerror = function(){ return done('warn'); };
+      reader.readAsArrayBuffer(f.slice(0,4));
+    } else {
+      return done('ok');
+    }
+  }
+
+  /* ===== 渲染列表 ===== */
+  function fmtSize(b){
+    if(b<1024) return b+' B';
+    if(b<1024*1024) return (b/1024).toFixed(1)+' KB';
+    return (b/1024/1024).toFixed(1)+' MB';
+  }
+  function render(){
+    var list = $('fileList'), count = $('count'), btnAll = $('btnAll');
+    list.innerHTML = '';
+    selected.forEach(function(it, i){
+      var row = document.createElement('div');
+      row.className = 'file-row';
+      var img = document.createElement('img');
+      img.className = 'thumb';
+      img.alt = '';
+      try{
+        if(it.file.type && it.file.type.indexOf('image/')===0){
+          img.src = URL.createObjectURL(it.file);
+        } else {
+          img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44"><rect width="44" height="44" rx="10" fill="#F8E8E0"/><text x="22" y="28" font-size="18" text-anchor="middle" fill="#85746B">🖼️</text></svg>');
+        }
+      }catch(e){ img.style.display='none'; }
+
+      var info = document.createElement('div');
+      info.className = 'info';
+      info.innerHTML = '<div class="name">' + esc(it.origName) + ' → ' + esc(it.newName) + '</div>' +
+                       '<div class="meta">' + fmtSize(it.file.size) + '</div>';
+
+      var badge = document.createElement('span');
+      badge.className = 'badge warn';
+      badge.textContent = '检查中…';
+      classify(it.file, function(st){
+        var label = st==='ok' ? '✓ 图片' : (st==='warn' ? '⚠ 未知' : '✕ 异常');
+        badge.className = 'badge ' + st;
+        badge.textContent = label;
+      });
+
+      var dl = document.createElement('button');
+      dl.className = 'dl';
+      dl.textContent = '⬇ 下载';
+      dl.dataset.idx = i;
+      dl.addEventListener('click', function(){ downloadAsJpg(dl); });
+
+      row.appendChild(img); row.appendChild(info); row.appendChild(badge); row.appendChild(dl);
+      list.appendChild(row);
+    });
+    count.textContent = '已选 ' + selected.length + ' 个文件';
+    btnAll.disabled = selected.length === 0 || capFail;
+    btnAll.textContent = '⬇ 全部改名下载';
+  }
+
+  function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+  /* ===== 改名下载（.0 → .jpg，不改字节，与 App 一致）===== */
+  function downloadAsJpg(btn){
+    if(btn.classList.contains('done')) return;
+    var it = selected[+btn.dataset.idx];
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(it.file);
+    a.download = it.newName;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    btn.textContent = '✓ 已下载';
+    btn.classList.add('done');
+    it.done = true;
+    updateAllBtn();
+  }
+
+  function updateAllBtn(){
+    var allDone = selected.length>0 && selected.every(function(it){ return it.done; });
+    $('btnAll').disabled = allDone || selected.length===0 || capFail;
+    $('btnAll').textContent = allDone ? '✅ 全部已下载' : '⬇ 全部改名下载';
+  }
+
+  /* 全部下载：逐个错开触发，兼容移动端 */
+  $('btnAll').addEventListener('click', function(){
+    selected.forEach(function(it, i){
+      setTimeout(function(){
+        var row = $('fileList').children[i];
+        if(row){ row.querySelector('button.dl').click(); }
+      }, i * 150);
+    });
+  });
+
+  /* ===== 初始化 ===== */
+  renderCaps();
+  setTimeout(showOverlay, 400);
+})();
+</script>
+</body>
+</html>

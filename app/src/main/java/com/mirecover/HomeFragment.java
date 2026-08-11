@@ -70,13 +70,13 @@ public class HomeFragment extends Fragment {
                 .setTitle(R.string.howto_title)
                 .setMessage(msg)
                 .setPositiveButton(R.string.howto_ok, null)
-                .setNeutralButton(R.string.howto_more, (d, w) -> openHomePage())
+                .setNeutralButton(R.string.btn_online_repair, (d, w) -> openHomePage())
                 .show();
     }
 
-    /** 用系统浏览器打开 GitHub Pages 落地页。 */
+    /** 用系统浏览器打开在线找回页（免安装，无需下载 App）。 */
     private void openHomePage() {
-        String url = getString(R.string.howto_more_url);
+        String url = getString(R.string.online_repair_url);
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

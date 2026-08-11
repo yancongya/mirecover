@@ -18,6 +18,9 @@
     <string name="howto_more">📄 了解更多（网页）</string>
     <string name="howto_more_url">https://yancongya.github.io/mirecover/</string>
     <string name="howto_more_fail">无法打开网页，请手动访问：\n%1$s</string>
+    <string name="btn_online_repair">🌐 在线找回（免安装）</string>
+    <string name="btn_online_repair_hint">不用下载 App，浏览器里直接把 .0 改名下载成 .jpg</string>
+    <string name="online_repair_url">https://yancongya.github.io/mirecover/repair.html</string>
 
     <!-- 配置区 -->
     <string name="lbl_source">源缓存目录（含 .0 文件）</string>
