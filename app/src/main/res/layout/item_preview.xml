@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="3dp">
+
+    <ImageView
+        android:id="@+id/iv_thumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/tab_preview"
+        android:background="?attr/colorSurfaceContainerHighest" />
+
+    <!-- 选中态遮罩 -->
+    <View
+        android:id="@+id/iv_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66FF6900"
+        android:visibility="gone" />
+
+    <!-- 右上角圆形勾选徽标 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/badge"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="6dp"
+        app:cardCornerRadius="13dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/on_primary">
+
+        <ImageView
+            android:id="@+id/iv_check"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_check"
+            app:tint="@color/primary" />
+    </com.google.android.material.card.MaterialCardView>
+</FrameLayout>

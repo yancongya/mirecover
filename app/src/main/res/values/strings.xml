@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">MIUI 缓存图片恢复</string>
+    <string name="title">MIUI 缓存图片恢复</string>
+    <string name="desc">找回误删/丢失的图片：把缓存里的 .0 文件修复为 .jpg，再导出回相册</string>
+
+    <!-- 使用说明 -->
+    <string name="btn_howto">📖 这是干嘛的？怎么用？</string>
+    <string name="howto_title">使用说明</string>
+    <string name="howto_what_title">🔍 这是干嘛的？</string>
+    <string name="howto_what">手机相册有时会误删照片，或被系统缓存挤掉。其实很多图片并没有真消失，而是变成了没名字的 .0 缓存文件藏在手机里。\n\n这个 App 能把这些“隐藏”的图片找回来：先修复成正常图片，再放回相册。</string>
+    <string name="howto_steps_title">📋 怎么用？（三步）</string>
+    <string name="howto_step1">第一步 · 准备\n用手机自带的「文件管理」App，把相册缓存里的 full_size 文件夹复制到 Download 文件夹里。（具体位置见下方提示）</string>
+    <string name="howto_step2">第二步 · 修复\n打开本 App，在「主面板」确认源路径后，点橙色的「修复文件」按钮。它会自动把缓存里的 .0 文件变成 .jpg。</string>
+    <string name="howto_step3">第三步 · 找回\n切到「修复预览」，勾选想找回的图片，点「导出选中到相册」，图片就会回到相册啦。</string>
+    <string name="howto_note_title">⚠️ 小提示</string>
+    <string name="howto_note">· 先用「主面板」里的“如何把缓存目录复制过来？”看详细步骤。\n· 找回的图片可能比较模糊，因为它们是原图的缓存版本。\n· 修复或导出前，请先按提示授予存储权限。</string>
+    <string name="howto_ok">明白了</string>
+
+    <!-- 配置区 -->
+    <string name="lbl_source">源缓存目录（含 .0 文件）</string>
+    <string name="source_hint">如 /storage/emulated/0/Download/full_size</string>
+    <string name="source_empty">请先填写源缓存目录路径</string>
+    <string name="lbl_repair">修复输出目录（.jpg 存放处）</string>
+    <string name="repair_hint">如 /storage/emulated/0/Download/MIRecovered</string>
+    <string name="btn_repair">修复文件（.0 → .jpg）</string>
+    <string name="repairing">正在修复…</string>
+    <string name="repair_done">修复完成：成功 %1$d 个，跳过 %2$d 个，失败 %3$d 个</string>
+
+    <!-- 相册导出 -->
+    <string name="lbl_export">导出到相册</string>
+    <string name="subdir_hint">相册子目录（DCIM 下，如 Camera / Recovered）</string>
+    <string name="select_all">全选</string>
+    <string name="btn_export">导出选中到相册</string>
+    <string name="exporting">正在导出…</string>
+    <string name="export_done">导出完成：成功 %1$d 个，失败 %2$d 个 → DCIM/%3$s</string>
+    <string name="exported_toast">已导出 %1$d 个图片到相册</string>
+    <string name="select_none">请先勾选要导出的图片</string>
+
+    <!-- 配置面板辅助 -->
+    <string name="more_settings">更多设置</string>
+    <string name="more_settings_hint">相册子目录与使用帮助</string>
+
+    <!-- Tab 与通用 -->
+    <string name="tab_src">源文件(.0)</string>
+    <string name="tab_home">主面板</string>
+    <string name="open_dir">打开</string>
+    <string name="permission_need_title">需要存储权限</string>
+    <string name="permission_need_msg">本应用需要读取源缓存目录、写入相册。请授予以下权限：\n· 读取媒体图片（读取修复后的图片）\n· 所有文件访问（读取 Android/data 缓存目录）\n\n点击「去授权」按系统提示开启。</string>
+    <string name="permission_goto">去授权</string>
+    <string name="permission_ok">存储权限已就绪</string>
+    <string name="tab_preview">修复预览</string>
+    <string name="refresh">刷新</string>
+    <string name="loading">加载中…</string>
+    <string name="src_done">源目录 .0 文件：%1$d 个\n%2$s\n点击条目可打开所在目录</string>
+    <string name="preview_done">修复预览：%1$d 个 .jpg\n%2$s\n点击勾选，长按预览</string>
+
+    <!-- 提示与帮助 -->
+    <string name="btn_help_copy">如何把缓存目录复制过来？</string>
+    <string name="help_copy_tips">第一步：打开手机「文件管理」；\n第二步：进入 Android/data/com.miui.gallery/files/gallery_disk_cache/；\n第三步：把整个 full_size 文件夹复制到 Download 下（即变成 Download/full_size）；\n第四步：回到本 App，源路径默认已是 /storage/emulated/0/Download/full_size；\n第五步：点「修复文件」，App 会递归扫描全部子目录把 .0 修复成 .jpg。\n\n注意：Android 11+ 系统限制，App 无法直接读取 Android/data，必须先复制整个目录到普通位置。</string>
+
+    <!-- 空状态 -->
+    <string name="empty_src">源目录下没有找到 .0 文件</string>
+    <string name="empty_preview">暂无修复预览，请先在上方执行修复</string>
+    <string name="empty_hint">提示：%1$s</string>
+</resources>

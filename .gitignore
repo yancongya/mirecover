@@ -1,0 +1,28 @@
+# Gradle
+.gradle/
+build/
+*/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# 本地环境（含 SDK 路径，不入库）
+local.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# 构建脚本产生的临时日志
+build_log.txt
+build_log*.txt
+jar_test.txt
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# CodeBuddy 内部数据（勿提交）
+.codebuddy/

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MIUI 橙色系 · 深色 -->
+    <color name="primary">#FFB690</color>
+    <color name="on_primary">#5B1A00</color>
+    <color name="primary_container">#7C2C00</color>
+    <color name="on_primary_container">#FFDBC8</color>
+
+    <color name="secondary">#E7BFAF</color>
+    <color name="on_secondary">#422B20</color>
+    <color name="secondary_container">#5B4135</color>
+    <color name="on_secondary_container">#FFDBC8</color>
+
+    <color name="tertiary">#CFC095</color>
+    <color name="on_tertiary">#362B10</color>
+    <color name="tertiary_container">#4D4126</color>
+    <color name="on_tertiary_container">#EBDCB8</color>
+
+    <color name="error">#FFB4AB</color>
+    <color name="on_error">#690005</color>
+    <color name="error_container">#93000A</color>
+    <color name="on_error_container">#FFDAD6</color>
+
+    <color name="surface">#1A1109</color>
+    <color name="on_surface">#F1DFD7</color>
+    <color name="surface_variant">#52443C</color>
+    <color name="on_surface_variant">#D8C2B8</color>
+
+    <color name="outline">#A08C83</color>
+    <color name="outline_variant">#52443C</color>
+    <color name="surface_container_lowest">#140C05</color>
+    <color name="surface_container_low">#221913</color>
+    <color name="surface_container">#271D17</color>
+    <color name="surface_container_high">#312722</color>
+    <color name="surface_container_highest">#3C312C</color>
+    <color name="on_surface_inverse">#211A16</color>
+    <color name="inverse_primary">#FF6900</color>
+</resources>
