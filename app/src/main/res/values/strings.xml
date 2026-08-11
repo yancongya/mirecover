@@ -15,6 +15,9 @@
     <string name="howto_note_title">⚠️ 小提示</string>
     <string name="howto_note">· 先用「主面板」里的“如何把缓存目录复制过来？”看详细步骤。\n· 找回的图片可能比较模糊，因为它们是原图的缓存版本。\n· 修复或导出前，请先按提示授予存储权限。</string>
     <string name="howto_ok">明白了</string>
+    <string name="howto_more">📄 了解更多（网页）</string>
+    <string name="howto_more_url">https://yancongya.github.io/mirecover/</string>
+    <string name="howto_more_fail">无法打开网页，请手动访问：\n%1$s</string>
 
     <!-- 配置区 -->
     <string name="lbl_source">源缓存目录（含 .0 文件）</string>

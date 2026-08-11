@@ -30,17 +30,12 @@
             android:layout_marginTop="8dp"
             android:text="@string/btn_howto" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/settings_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-
         <!-- 配置区（主面板卡片） -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/settings_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"

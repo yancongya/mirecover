@@ -1,5 +1,7 @@
 package com.mirecover;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -76,7 +79,21 @@ public class HomeFragment extends Fragment {
                 .setTitle(R.string.howto_title)
                 .setMessage(msg)
                 .setPositiveButton(R.string.howto_ok, null)
+                .setNeutralButton(R.string.howto_more, (d, w) -> openHomePage())
                 .show();
+    }
+
+    /** 用系统浏览器打开 GitHub Pages 落地页。 */
+    private void openHomePage() {
+        String url = getString(R.string.howto_more_url);
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(requireContext(),
+                    getString(R.string.howto_more_fail, url), Toast.LENGTH_LONG).show();
+        }
     }
 
     /** 展开/收起「更多设置」面板并旋转箭头。 */
