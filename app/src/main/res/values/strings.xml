@@ -46,6 +46,7 @@
     <!-- Tab 与通用 -->
     <string name="tab_src">源文件(.0)</string>
     <string name="tab_home">主面板</string>
+    <string name="tab_about">关于</string>
     <string name="open_dir">打开</string>
     <string name="permission_need_title">需要存储权限</string>
     <string name="permission_need_msg">本应用需要读取源缓存目录、写入相册。请授予以下权限：\n· 读取媒体图片（读取修复后的图片）\n· 所有文件访问（读取 Android/data 缓存目录）\n\n点击「去授权」按系统提示开启。</string>
@@ -65,4 +66,24 @@
     <string name="empty_src">源目录下没有找到 .0 文件</string>
     <string name="empty_preview">暂无修复预览，请先在上方执行修复</string>
     <string name="empty_hint">提示：%1$s</string>
+
+    <!-- 关于页 -->
+    <string name="about_features">· 找回误删/丢失的相册图片\n· 修复 .0 缓存为 .jpg\n· 双列缩略图预览、勾选导出\n· 一键导出到相册 DCIM\n· Material 3 深色模式\n· 家人友好的图文使用说明</string>
+    <string name="about_github">⭐ 查看 GitHub 源码</string>
+    <string name="about_footer">为家人而建 · 完全本地离线处理 · 尊重隐私</string>
+    <string name="about_version">版本 %1$s</string>
+
+    <!-- 检查更新 / 热更新 -->
+    <string name="btn_check_update">🔄 检查新版本</string>
+    <string name="checking_update">正在检查新版本…</string>
+    <string name="no_update">已是最新版本 (%1$s)</string>
+    <string name="check_update_fail">检查更新失败，请检查网络后重试</string>
+    <string name="update_available">发现新版本 %1$s</string>
+    <string name="update_dialog_title">发现新版本</string>
+    <string name="update_dialog_msg">当前版本 %1$s\n最新版本 %2$s\n\n是否下载并安装？</string>
+    <string name="update_downloading">正在下载更新… (%1$d%%)</string>
+    <string name="update_download_ok">下载完成，请点击安装</string>
+    <string name="update_download_fail">下载失败，请重试</string>
+    <string name="btn_download">下载</string>
+    <string name="btn_cancel">取消</string>
 </resources>

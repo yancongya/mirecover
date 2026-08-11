@@ -53,7 +53,15 @@ public class PreviewFragment extends Fragment {
         btnExport = v.findViewById(R.id.btn_export_preview);
         MaterialButton btnRefresh = v.findViewById(R.id.btn_refresh_preview);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+        // 自适应列数：手机 2 列，宽屏 3 列
+        int span = 2;
+        float dpWidth = requireContext().getResources().getDisplayMetrics().widthPixels
+                / requireContext().getResources().getDisplayMetrics().density;
+        if (dpWidth >= 600f) span = 3;      // 平板/横屏
+        else if (dpWidth >= 480f) span = 2;
+
+        GridLayoutManager glm = new GridLayoutManager(requireContext(), span);
+        recyclerView.setLayoutManager(glm);
         adapter = new PreviewAdapter(repairedList, selected);
         setupAdapterListener();
         recyclerView.setAdapter(adapter);
@@ -107,7 +115,13 @@ public class PreviewFragment extends Fragment {
             public void onTap(int position) {
                 if (position >= 0 && position < selected.length) {
                     selected[position] = !selected[position];
-                    adapter.notifyDataSetChanged();
+                    // 播放选中动效（徽标缩放 + 遮罩淡入）
+                    RecyclerView.ViewHolder h =
+                            recyclerView.findViewHolderForAdapterPosition(position);
+                    if (h instanceof PreviewAdapter.VH) {
+                        ((PreviewAdapter.VH) h).animateSelection(selected[position]);
+                    }
+                    adapter.notifyItemChanged(position);
                     updateSelectAllState();
                 }
             }

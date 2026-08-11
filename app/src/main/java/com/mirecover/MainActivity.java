@@ -30,10 +30,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int POS_HOME = 0;
     private static final int POS_SRC = 1;
     private static final int POS_PREVIEW = 2;
+    private static final int POS_ABOUT = 3;
 
     private HomeFragment homeFragment;
     private SrcFragment srcFragment;
     private PreviewFragment previewFragment;
+    private AboutFragment aboutFragment;
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNav;
 
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNav = findViewById(R.id.bottom_nav);
         viewPager.setAdapter(new PagerAdapter(this));
         // 预创建全部 Fragment，保证修复后能立即刷新
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
 
         // 底部导航 ↔ ViewPager 双向联动
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -58,22 +60,91 @@ public class MainActivity extends AppCompatActivity {
         });
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            int pos = id == R.id.nav_home ? POS_HOME
-                    : id == R.id.nav_src ? POS_SRC
-                    : POS_PREVIEW;
+            int pos;
+            if (id == R.id.nav_home) pos = POS_HOME;
+            else if (id == R.id.nav_src) pos = POS_SRC;
+            else if (id == R.id.nav_preview) pos = POS_PREVIEW;
+            else pos = POS_ABOUT;
             viewPager.setCurrentItem(pos, false);
             return true;
         });
 
         // 检测并申请存储权限
         checkAndRequestPermissions();
+
+        // 启动后静默检查更新（有新版才提示，避免打扰）
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(
+                this::silentCheckUpdate, 2500);
+    }
+
+    /** 启动时静默检查更新：仅当发现新版本时弹窗，否则保持安静。 */
+    private void silentCheckUpdate() {
+        UpdateChecker.check(this, new UpdateChecker.Callback() {
+            @Override
+            public void onLatest(int versionCode, String versionName) {
+                runOnUiThread(() -> promptDownload(versionName));
+            }
+
+            @Override
+            public void onNoUpdate() { /* 静默 */ }
+
+            @Override
+            public void onError(String msg) { /* 静默 */ }
+        });
+    }
+
+    /** 弹出下载对话框并走下载安装流程。 */
+    private void promptDownload(String newVersion) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.update_dialog_title)
+                .setMessage(getString(R.string.update_dialog_msg,
+                        currentVersionName(), newVersion))
+                .setPositiveButton(R.string.btn_download, (d, w) ->
+                        startDownloadAndInstall(newVersion))
+                .setNegativeButton(R.string.btn_cancel, null)
+                .show();
+    }
+
+    private void startDownloadAndInstall(String version) {
+        Toast.makeText(this, getString(R.string.update_downloading, 0), Toast.LENGTH_SHORT).show();
+        UpdateChecker.download(this, apkUrl(), new UpdateChecker.DownloadCallback() {
+            @Override
+            public void onProgress(int percent) { }
+
+            @Override
+            public void onDone(File apk) {
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, R.string.update_download_ok, Toast.LENGTH_LONG).show();
+                    UpdateChecker.install(MainActivity.this, apk);
+                });
+            }
+
+            @Override
+            public void onError(String msg) {
+                runOnUiThread(() ->
+                        Toast.makeText(MainActivity.this, R.string.update_download_fail, Toast.LENGTH_LONG).show());
+            }
+        });
+    }
+
+    private String currentVersionName() {
+        try {
+            return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (Exception e) {
+            return "1.0.0";
+        }
+    }
+
+    private String apkUrl() {
+        return "https://github.com/yancongya/mirecover/releases/latest/download/app-release.apk";
     }
 
     /** position → 底部导航菜单 id。 */
     private int getNavIdForPosition(int position) {
         if (position == POS_HOME) return R.id.nav_home;
         if (position == POS_SRC) return R.id.nav_src;
-        return R.id.nav_preview;
+        if (position == POS_PREVIEW) return R.id.nav_preview;
+        return R.id.nav_about;
     }
 
     private static final int REQ_STORAGE = 2001;
@@ -236,15 +307,18 @@ public class MainActivity extends AppCompatActivity {
             } else if (position == POS_SRC) {
                 if (srcFragment == null) srcFragment = new SrcFragment();
                 return srcFragment;
-            } else {
+            } else if (position == POS_PREVIEW) {
                 if (previewFragment == null) previewFragment = new PreviewFragment();
                 return previewFragment;
+            } else {
+                if (aboutFragment == null) aboutFragment = new AboutFragment();
+                return aboutFragment;
             }
         }
 
         @Override
         public int getItemCount() {
-            return 3;
+            return 4;
         }
     }
 }
