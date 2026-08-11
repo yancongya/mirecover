@@ -116,12 +116,17 @@ nav{
   display:flex;align-items:center;justify-content:space-between;
   gap:8px;
 }
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;min-width:0}
-.brand img{width:34px;height:34px;border-radius:10px;flex:none;display:block}
-.brand .txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nav-links{display:flex;gap:8px;align-items:center}
-.nav-links a.link{color:var(--on-surface-variant);text-decoration:none;font-size:14px;padding:6px 8px;border-radius:8px;transition:color .2s,background .2s}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;min-width:0;flex:1 1 auto}
+.brand img{width:32px;height:32px;border-radius:9px;flex:none;display:block}
+.brand .txt{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-size:clamp(13px,4.2vw,17px);min-width:0;
+}
+/* 移动端：默认只显示品牌 + 下载按钮，隐藏次要链接避免挤压换行 */
+.nav-links{display:flex;gap:8px;align-items:center;flex:none}
+.nav-links a.link{display:none;color:var(--on-surface-variant);text-decoration:none;font-size:14px;padding:6px 8px;border-radius:8px;transition:color .2s,background .2s}
 .nav-links a.link:hover{color:var(--primary);background:var(--surface-container-low)}
+.nav-links a.btn{padding:8px 14px;font-size:13px}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   background:var(--primary);color:var(--on-primary);
@@ -257,6 +262,10 @@ footer a{color:var(--primary);text-decoration:none}
 
 /* ===== 移动优先增强：平板/桌面 ===== */
 @media (min-width:600px){
+  /* 平板/桌面恢复显示完整导航链接 */
+  .nav-links a.link{display:inline-flex}
+  .nav-links a.btn{padding:11px 20px;font-size:14px}
+  .brand .txt{font-size:16px}
   .mock-row{grid-template-columns:repeat(3,1fr);gap:18px;max-width:960px}
   .mock{flex-direction:column;text-align:center;padding:24px;gap:12px}
   .mock .ic{margin:0 auto}
