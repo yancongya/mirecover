@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 白色照片卡片（圆角矩形） -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M39,35 L69,35 A6,6 0 0 1 75,41 L75,67 A6,6 0 0 1 69,73 L39,73 A6,6 0 0 1 33,67 L33,41 A6,6 0 0 1 39,35 Z" />
+    <!-- 卡片内：左下角山峰（照片内容之一） -->
+    <path
+        android:fillColor="#FFD9BE"
+        android:pathData="M40,66 L49,52 L53,58 L57,51 L68,66 Z" />
+    <!-- 卡片内：右上角太阳圆点 -->
+    <path
+        android:fillColor="#FFD9BE"
+        android:pathData="M61,40 A5,5 0 1 1 61,50 A5,5 0 1 1 61,40 Z" />
+    <!-- 中心心形：珍爱记忆 -->
+    <path
+        android:fillColor="#FF6900"
+        android:pathData="M54,62 C54,62 45,56 45,49.5 C45,46 47.5,43.5 50.5,43.5 C52.2,43.5 53.6,44.3 54,45.5 C54.4,44.3 55.8,43.5 57.5,43.5 C60.5,43.5 63,46 63,49.5 C63,56 54,62 54,62 Z" />
+</vector>
