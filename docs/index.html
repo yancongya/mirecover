@@ -127,6 +127,40 @@ nav{
 .nav-links a.link{display:none;color:var(--on-surface-variant);text-decoration:none;font-size:14px;padding:6px 8px;border-radius:8px;transition:color .2s,background .2s}
 .nav-links a.link:hover{color:var(--primary);background:var(--surface-container-low)}
 .nav-links a.btn{padding:8px 14px;font-size:13px}
+/* 汉堡按钮（仅移动端） */
+.hamburger{
+  display:inline-flex;flex-direction:column;justify-content:center;gap:4px;
+  width:40px;height:40px;border:none;border-radius:10px;background:transparent;cursor:pointer;
+  flex:none;transition:background .2s;
+}
+.hamburger:hover{background:var(--surface-container-low)}
+.hamburger span{
+  display:block;width:20px;height:2px;border-radius:99px;margin:0 auto;
+  background:var(--on-surface);transition:transform .25s, opacity .2s;
+}
+.hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+/* 移动端下拉菜单 */
+.menu{
+  display:none;position:absolute;top:100%;left:0;right:0;z-index:49;
+  background:var(--surface-container-lowest);
+  border-bottom:1px solid var(--outline-variant);
+  box-shadow:var(--shadow);
+  padding:10px 16px 16px;flex-direction:column;gap:2px;
+}
+.menu.show{display:flex}
+.menu a{
+  color:var(--on-surface-variant);text-decoration:none;font-size:15px;padding:13px 12px;
+  border-radius:12px;transition:color .2s,background .2s;
+}
+.menu a:hover{color:var(--primary);background:var(--surface-container-low)}
+.menu a.online{color:var(--primary);font-weight:600}
+.menu a.dl{
+  margin-top:8px;text-align:center;background:var(--primary);color:var(--on-primary);
+  font-weight:600;border-radius:999px;
+}
+.menu a.dl:hover{color:var(--on-primary);background:var(--primary)}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   background:var(--primary);color:var(--on-primary);
@@ -262,9 +296,11 @@ footer a{color:var(--primary);text-decoration:none}
 
 /* ===== 移动优先增强：平板/桌面 ===== */
 @media (min-width:600px){
-  /* 平板/桌面恢复显示完整导航链接 */
+  /* 平板/桌面恢复显示完整导航链接，隐藏汉堡 */
   .nav-links a.link{display:inline-flex}
   .nav-links a.btn{padding:11px 20px;font-size:14px}
+  .hamburger{display:none}
+  .menu{display:none!important}
   .brand .txt{font-size:16px}
   .mock-row{grid-template-columns:repeat(3,1fr);gap:18px;max-width:960px}
   .mock{flex-direction:column;text-align:center;padding:24px;gap:12px}
@@ -300,7 +336,18 @@ footer a{color:var(--primary);text-decoration:none}
       <a href="#features" class="link">功能</a>
       <a href="repair.html" class="link" style="color:var(--primary)">🌐 在线找回（免安装）</a>
       <a href="https://github.com/yancongya/mirecover/releases/latest/download/app-release.apk" class="btn">⬇ 下载</a>
+      <button class="hamburger" id="hamburger" aria-label="打开菜单" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
+  </div>
+  <!-- 移动端汉堡菜单 -->
+  <div class="menu" id="menu">
+    <a href="#story">为什么</a>
+    <a href="#steps">怎么用</a>
+    <a href="#features">功能</a>
+    <a href="repair.html" class="online">🌐 在线找回（免安装）</a>
+    <a href="https://github.com/yancongya/mirecover/releases/latest/download/app-release.apk" class="dl">⬇ 下载 App</a>
   </div>
 </nav>
 
@@ -414,6 +461,42 @@ const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target);} });
 },{threshold:.2});
 document.querySelectorAll('.mock').forEach(el=>io.observe(el));
+
+// 汉堡菜单展开/收起
+const hamburger = document.getElementById('hamburger');
+const menu = document.getElementById('menu');
+if (hamburger && menu) {
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = menu.classList.toggle('show');
+    hamburger.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  // 点击菜单项后自动收起
+  menu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      menu.classList.remove('show');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
+  // 点击页面其他区域关闭菜单
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+      menu.classList.remove('show');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  // 按 Esc 关闭
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      menu.classList.remove('show');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
 </script>
 </body>
 </html>
