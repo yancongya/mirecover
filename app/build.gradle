@@ -2,6 +2,32 @@ plugins {
     id 'com.android.application'
 }
 
+// ===== 版本管理：从 version.properties 读取，构建后自动递增 =====
+def versionPropsFile = file("version.properties")
+
+def loadVersion = {
+    def p = new Properties()
+    if (versionPropsFile.exists()) {
+        versionPropsFile.withInputStream { p.load(it) }
+    }
+    if (!p.containsKey("versionCode")) p.setProperty("versionCode", "1")
+    if (!p.containsKey("majorVersion")) p.setProperty("majorVersion", "1")
+    if (!p.containsKey("minorVersion")) p.setProperty("minorVersion", "0")
+    return p
+}
+
+def saveVersion = { Properties p ->
+    def out = new FileOutputStream(versionPropsFile)
+    p.store(out, "Auto-incremented on each build. versionCode +1 after assemble.")
+    out.close()
+}
+
+def vp = loadVersion()
+def currentCode = vp.getProperty("versionCode").toInteger()
+def appMajor = vp.getProperty("majorVersion")
+def appMinor = vp.getProperty("minorVersion")
+def appVersionName = "${appMajor}.${appMinor}.${currentCode}"
+
 android {
     namespace 'com.mirecover'
     compileSdk 35
@@ -10,8 +36,8 @@ android {
         applicationId "com.mirecover"
         minSdk 21
         targetSdk 35
-        versionCode 1
-        versionName "1.0"
+        versionCode currentCode
+        versionName appVersionName
     }
 
     buildTypes {
@@ -23,9 +49,29 @@ android {
         }
     }
 
+    // APK 输出命名规范：MIUICacheRecover-<版本名>-<buildType>.apk
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "MIUICacheRecover-${variant.versionName}-${variant.buildType.name}.apk"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+// ===== 每次构建完成后自动递增 versionCode =====
+tasks.whenTaskAdded { task ->
+    if (task.name in ["assembleRelease", "assembleDebug"]) {
+        task.doLast {
+            def p = loadVersion()
+            def newCode = p.getProperty("versionCode").toInteger() + 1
+            p.setProperty("versionCode", newCode.toString())
+            saveVersion(p)
+            println ">> 版本已自动递增：versionCode ${newCode - 1} -> ${newCode}"
+        }
     }
 }
 
