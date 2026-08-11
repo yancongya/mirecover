@@ -35,7 +35,7 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Tab + 内容 -->
+    <!-- 内容 + 底部导航 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,21 +44,24 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="?attr/colorSurface">
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabIndicatorColor="?attr/colorPrimary"
-            app:tabIndicatorFullWidth="false"
-            app:tabMode="fixed"
-            app:tabRippleColor="?attr/colorPrimaryContainer"
-            app:tabSelectedTextColor="?attr/colorPrimary"
-            app:tabTextColor="?attr/colorOnSurfaceVariant" />
-
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <!-- 底部导航 -->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurface"
+            app:elevation="8dp"
+            app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
+            app:itemIconTint="@color/bottom_nav_tint"
+            app:itemTextColor="@color/bottom_nav_tint"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/bottom_nav_menu" />
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

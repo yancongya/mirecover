@@ -14,8 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
 
@@ -26,35 +26,54 @@ public class MainActivity extends AppCompatActivity {
     static final String DEFAULT_REPAIR =
             "/storage/emulated/0/Download/MIRecovered";
 
+    /** 各 Tab 对应的 ViewPager position。 */
+    private static final int POS_HOME = 0;
+    private static final int POS_SRC = 1;
+    private static final int POS_PREVIEW = 2;
+
     private HomeFragment homeFragment;
     private SrcFragment srcFragment;
     private PreviewFragment previewFragment;
+    private ViewPager2 viewPager;
+    private BottomNavigationView bottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 三个 Tab：源文件 / 修复预览 / 主面板
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
-        PagerAdapter pagerAdapter = new PagerAdapter(this);
-        viewPager.setAdapter(pagerAdapter);
+        // 三个页面：主面板 / 源文件 / 修复预览
+        viewPager = findViewById(R.id.view_pager);
+        bottomNav = findViewById(R.id.bottom_nav);
+        viewPager.setAdapter(new PagerAdapter(this));
         // 预创建全部 Fragment，保证修复后能立即刷新
         viewPager.setOffscreenPageLimit(3);
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            tab.setText(getTabTitle(position));
-        }).attach();
+
+        // 底部导航 ↔ ViewPager 双向联动
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                bottomNav.setSelectedItemId(getNavIdForPosition(position));
+            }
+        });
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            int pos = id == R.id.nav_home ? POS_HOME
+                    : id == R.id.nav_src ? POS_SRC
+                    : POS_PREVIEW;
+            viewPager.setCurrentItem(pos, false);
+            return true;
+        });
 
         // 检测并申请存储权限
         checkAndRequestPermissions();
     }
 
-    /** 三个 Tab 标题。 */
-    private String getTabTitle(int position) {
-        if (position == 0) return getString(R.string.tab_src);
-        if (position == 1) return getString(R.string.tab_preview);
-        return getString(R.string.tab_home);
+    /** position → 底部导航菜单 id。 */
+    private int getNavIdForPosition(int position) {
+        if (position == POS_HOME) return R.id.nav_home;
+        if (position == POS_SRC) return R.id.nav_src;
+        return R.id.nav_preview;
     }
 
     private static final int REQ_STORAGE = 2001;
@@ -164,11 +183,15 @@ public class MainActivity extends AppCompatActivity {
                         + "\n" + srcScan.diagnostic;
                 homeFragment.setStatus(diag);
                 homeFragment.setRepairBusy(false);
-                // 刷新源文件 / 修复预览两个 tab
+                // 刷新源文件 / 修复预览两个页面
                 refreshSrc();
                 if (previewFragment != null) {
                     previewFragment.setRepairDir(tgt);
                     previewFragment.loadRepaired();
+                }
+                // 修复完成后自动跳到「源文件」页面
+                if (viewPager != null) {
+                    viewPager.setCurrentItem(POS_SRC, false);
                 }
                 // 若一个都没修复，弹窗明示原因，便于排查
                 if (r.repaired == 0 && r.failed == 0) {
@@ -197,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Pager 适配器：提供三个 Fragment（源文件 / 修复预览 / 主面板）。 */
+    /** Pager 适配器：提供三个 Fragment（主面板 / 源文件 / 修复预览）。 */
     private class PagerAdapter extends FragmentStateAdapter {
 
         PagerAdapter(@NonNull MainActivity activity) {
@@ -207,15 +230,15 @@ public class MainActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            if (position == 0) {
-                if (srcFragment == null) srcFragment = new SrcFragment();
-                return srcFragment;
-            } else if (position == 1) {
-                if (previewFragment == null) previewFragment = new PreviewFragment();
-                return previewFragment;
-            } else {
+            if (position == POS_HOME) {
                 if (homeFragment == null) homeFragment = new HomeFragment();
                 return homeFragment;
+            } else if (position == POS_SRC) {
+                if (srcFragment == null) srcFragment = new SrcFragment();
+                return srcFragment;
+            } else {
+                if (previewFragment == null) previewFragment = new PreviewFragment();
+                return previewFragment;
             }
         }
 
