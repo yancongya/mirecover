@@ -18,6 +18,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 家庭用途：用 debug 签名签 release，便于直接安装到手机
+            signingConfig signingConfigs.debug
         }
     }
 
